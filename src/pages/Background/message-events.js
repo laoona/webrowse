@@ -41,6 +41,23 @@ onMessageFromContentScript(MessageLocation.Background, {
       });
     })
   },
+  // 监听来自 ContentScript 关闭 Tab
+  [EVENTS.CLOSE_TAB]: (request) => {
+    const { tabId, following = false } = request;
+
+    if (!tabId) return;
+
+    chrome.tabs.get(+tabId, tab => {
+      if (!tab) return;
+
+      chrome.tabs.remove(+tabId, () => {
+        if (following) {
+          sendMessageToContentScript(tabId, null, MessageLocation.Background, EVENTS.FOLLOW_MODE_TIP)
+        }
+      });
+    });
+  },
+
   [EVENTS.LOGIN]: (request = {}, sender) => {
     const { scene = 'login', popup = false } = request;
     if (popup) {

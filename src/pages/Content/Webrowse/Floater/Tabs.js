@@ -5,6 +5,8 @@ import StyledBlock from "./StyledBlock";
 import EVENTS from "../../../common/events";
 import AvatarList from "../../../common/AvatarList";
 import Favicon from "../../../common/Favicon";
+import IconClose from '../icons/Close';
+
 const StyledWrapper = styled(StyledBlock)`
   padding: 12px 0;
   background: var(--tab-status-bg-color);
@@ -28,8 +30,15 @@ const StyledWrapper = styled(StyledBlock)`
       height: 40px;
       box-sizing: border-box;
       cursor: pointer;
+      .close {
+        display: none;
+        margin-left: 4px;
+      }
       &:hover {
         background-color: var(--tab-hover-bg-color);
+        .close {
+          display: block;
+        }
       }
       &.host {
         position: relative;
@@ -85,6 +94,21 @@ export default function Tabs({ tabs, users, closeBlock }) {
     sendMessageToBackground({}, MessageLocation.Content, EVENTS.UPDATE_TABS);
   }, []);
   console.log("tabs users", { users });
+
+  /**
+   * 关闭 Tab
+   * @param evt
+   */
+  const handleClose = (evt) => {
+    const { tabId } = evt.currentTarget.dataset;
+    evt.stopPropagation();
+    sendMessageToBackground(
+      { tabId },
+      MessageLocation.Content,
+      EVENTS.CLOSE_TAB,
+    );
+  }
+
   return (
     <StyledWrapper>
       <div
@@ -121,6 +145,13 @@ export default function Tabs({ tabs, users, closeBlock }) {
                 <span className="title">{title}</span>
                 {/* members */}
                 <AvatarList users={activeUsers} />
+                <span
+                  onClick={handleClose}
+                  data-tab-id={id}
+                  className='close'
+                >
+                  <IconClose color='#BBBCBE' />
+                </span>
               </li>
             );
           })}

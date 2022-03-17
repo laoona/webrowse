@@ -37,6 +37,8 @@ const EVENTS = {
   UPDATE_TABS: 'UPDATE_TABS',
   // 跳转tab
   JUMP_TAB: 'JUMP_TAB',
+  // 删除 tab
+  CLOSE_TAB: 'CLOSE_TAB',
   // 登录
   LOGIN: 'LOGIN',
   // 退出
